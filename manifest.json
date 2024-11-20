@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Amazon Filter Extension",
+  "version": "1.0",
+  "description": "Filter Amazon products based on keywords",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://*.amazon.ca/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [ "https://*.amazon.ca/*" ],
+      "js": [ "content.js" ],
+      "run_at": "document_start"
+    }
+  ],
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}
