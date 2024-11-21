@@ -1,7 +1,3 @@
-//Amazon Power Filter
-//by Normand Defayette
-//Cortex R&D Inc
-
 document.addEventListener('DOMContentLoaded', function () {
     const filterWordsTextarea = document.getElementById('filterWords');
     const applyButton = document.getElementById('applyFilter');
@@ -27,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     applyButton.addEventListener('click', async function () {
         const words = filterWordsTextarea.value
-            .split('\n')
+            .split(/[\n\s]+/)
             .map(word => word.trim())
             .filter(word => word !== '');
 
