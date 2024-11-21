@@ -2,6 +2,8 @@
 //by Normand Defayette
 //Cortex R&D Inc
 
+let currentFilter = null;
+
 // Send a message to confirm the content script is loaded
 chrome.runtime.sendMessage({ action: "contentScriptLoaded" });
 
@@ -38,6 +40,35 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
 });
 
+const observer = new MutationObserver((mutations) => {
+    if (currentFilter) {
+        // Wait for product elements to be available
+        const elements = document.querySelectorAll('div[data-asin]');
+        if (elements.length > 0) {
+            console.log("Products found after mutation, reapplying filter");
+            filterElements(currentFilter);
+        }
+    }
+});
+
+// Start observing with a more specific target
+function startObserver() {
+    const searchResults = document.querySelector('.s-result-list');
+    if (searchResults) {
+        observer.observe(searchResults, {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
+    } else {
+        // If search results container isn't ready yet, wait and try again
+        setTimeout(startObserver, 1000);
+    }
+}
+
+// Initial observer start
+startObserver();
+
 function findRelatedSearchesContainer() {
     const relatedSearchesHeading = Array.from(document.querySelectorAll('h2')).find(h2 =>
         h2.textContent.toLowerCase().includes('related searches')
@@ -51,10 +82,13 @@ function findRelatedSearchesContainer() {
 
 function filterElements(config = {
     selector: 'div[data-asin]',
-    words: [],  // Now we'll receive a single array of words with +/- prefixes
+    words: [],
     removeSelectors: []
 }) {
     console.log("Applying filter with config:", config);
+
+    currentFilter = config;  // Store current filter config
+
     if (!document.getElementById('amazon-filter-style')) {
         const style = document.createElement('style');
         style.id = 'amazon-filter-style';
@@ -125,15 +159,14 @@ function filterElements(config = {
 
 function clearFilter() {
     console.log("Clearing filter");
-    // Remove the custom style
+    currentFilter = null;  // Clear stored filter config
+
     const styleElement = document.getElementById('amazon-filter-style');
     if (styleElement) {
         styleElement.remove();
     }
 
-    // Show all previously hidden elements
     document.querySelectorAll('.amazon-filter-hidden').forEach(element => {
         element.classList.remove('amazon-filter-hidden');
     });
 }
-
