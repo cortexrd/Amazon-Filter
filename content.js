@@ -10,7 +10,7 @@ chrome.runtime.sendMessage({ action: "contentScriptLoaded" });
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log("Message received in content script:", request);
     if (request.action === "applyFilter") {
-        filterElements(request.config);
+        filterElements(request.config);  // config will now contain 'words' instead of keepWords/removeWords
         sendResponse({ success: true });
     } else if (request.action === "clearFilter") {
         clearFilter();
@@ -51,8 +51,7 @@ function findRelatedSearchesContainer() {
 
 function filterElements(config = {
     selector: 'div[data-asin]',
-    removeWords: [],
-    keepWords: [],
+    words: [],  // Now we'll receive a single array of words with +/- prefixes
     removeSelectors: []
 }) {
     console.log("Applying filter with config:", config);
@@ -63,8 +62,7 @@ function filterElements(config = {
         document.head.appendChild(style);
     }
 
-    const relatedSearchesContainer = findRelatedSearchesContainer(); //Keep this useful div.
-
+    const relatedSearchesContainer = findRelatedSearchesContainer();
     const elements = document.querySelectorAll(config.selector);
     console.log("Found elements:", elements.length);
 
@@ -78,21 +76,40 @@ function filterElements(config = {
 
         const text = element.textContent.toLowerCase();
 
-        const shouldRemove = config.removeWords.some(word =>
-            text.includes(word.toLowerCase())
-        );
+        // Split words into required, excluded, and optional
+        const requiredWords = config.words
+            .filter(word => word.startsWith('+'))
+            .map(word => word.slice(1).toLowerCase());
 
-        const shouldKeep = config.keepWords.length === 0 || config.keepWords.some(word =>
-            text.includes(word.toLowerCase())
-        );
+        const excludedWords = config.words
+            .filter(word => word.startsWith('-'))
+            .map(word => word.slice(1).toLowerCase());
 
-        if (shouldRemove || !shouldKeep) {
-            element.classList.add('amazon-filter-hidden');
-        } else {
+        const optionalWords = config.words
+            .filter(word => !word.startsWith('+') && !word.startsWith('-'))
+            .map(word => word.toLowerCase());
+
+        // Element must contain ALL required words
+        const hasAllRequired = requiredWords.length === 0 ||
+            requiredWords.every(word => text.includes(word));
+
+        // Element must not contain ANY excluded words
+        const hasNoExcluded = excludedWords.length === 0 ||
+            !excludedWords.some(word => text.includes(word));
+
+        // If there are optional words, element must contain at least one
+        const hasOptional = optionalWords.length === 0 ||
+            optionalWords.some(word => text.includes(word));
+
+        // Show element only if it meets all conditions
+        if (hasAllRequired && hasNoExcluded && hasOptional) {
             element.classList.remove('amazon-filter-hidden');
+        } else {
+            element.classList.add('amazon-filter-hidden');
         }
     });
 
+    // Rest of your removeSelectors code remains the same
     if (config.removeSelectors && config.removeSelectors.length > 0) {
         config.removeSelectors.forEach(selector => {
             document.querySelectorAll(selector).forEach(element => {

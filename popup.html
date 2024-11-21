@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Amazon Filter</title>
+    <title>Amazon Power Filter</title>
     <style>
         body {
             width: 300px;
@@ -17,7 +17,7 @@
 
         textarea {
             width: 100%;
-            height: 60px;
+            height: 100px;
             resize: vertical;
         }
 
@@ -70,24 +70,27 @@
             background-color: #f2dede;
             color: #a94442;
         }
+
+        .help-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div>
-            <label for="keepWords">Words to Keep (one per line):</label>
-            <textarea id="keepWords" placeholder="Enter words to keep..."></textarea>
-        </div>
-
-        <div>
-            <label for="removeWords">Words to Remove (one per line):</label>
-            <textarea id="removeWords" placeholder="Enter words to remove..."></textarea>
+            <label for="filterWords">Include/Exclude Words (one per line):</label>
+            <div class="help-text">Use +word to require, -word to exclude, word for optional match</div>
+            <textarea id="filterWords" placeholder="+laptop (must have)&#13;&#10;-refurbished (exclude)&#13;&#10;gaming (optional)"></textarea>
         </div>
 
         <div class="button-container">
             <button id="applyFilter" title="Apply Filter (Ctrl+Enter)">Apply Filter</button>
             <button id="clearFilter" title="Clear Filter (Ctrl+Delete)">Clear Filter</button>
-        </div>        <div id="status" class="status"></div>
+        </div>
+        <div id="status" class="status"></div>
     </div>
     <script src="popup.js"></script>
 </body>
