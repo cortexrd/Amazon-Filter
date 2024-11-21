@@ -1,26 +1,16 @@
 {
   "manifest_version": 3,
-  "name": "Amazon Filter Extension",
+  "name": "Amazon Power Filter",
   "version": "1.0",
-  "description": "Filter Amazon products based on keywords",
+  "description": "Power filter for Amazon search results - Find exactly what you want with advanced post-search filtering capabilities",
   "permissions": [
     "storage",
     "activeTab",
     "scripting"
   ],
-  "host_permissions": [
-    "https://*.amazon.ca/*"
-  ],
   "action": {
     "default_popup": "popup.html"
   },
-  "content_scripts": [
-    {
-      "matches": [ "https://*.amazon.ca/*" ],
-      "js": [ "content.js" ],
-      "run_at": "document_start"
-    }
-  ],
   "icons": {
     "16": "icon16.png",
     "48": "icon48.png",

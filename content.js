@@ -1,3 +1,7 @@
+//Amazon Power Filter
+//by Normand Defayette
+//Cortex R&D Inc
+
 // Send a message to confirm the content script is loaded
 chrome.runtime.sendMessage({ action: "contentScriptLoaded" });
 

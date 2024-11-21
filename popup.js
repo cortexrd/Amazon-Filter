@@ -1,3 +1,7 @@
+//Amazon Power Filter
+//by Normand Defayette
+//Cortex R&D Inc
+
 document.addEventListener('DOMContentLoaded', function () {
     const keepWordsTextarea = document.getElementById('keepWords');
     const removeWordsTextarea = document.getElementById('removeWords');
