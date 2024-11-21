@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Amazon Power Filter",
   "version": "1.0",
-  "description": "Power filter for Amazon search results - Find exactly what you want with advanced post-search filtering capabilities",
+  "description": "Power filter for Amazon search results - customize visibility with include/exclude keywords",
   "permissions": [
     "storage",
     "activeTab",
@@ -10,6 +10,15 @@
   ],
   "action": {
     "default_popup": "popup.html"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F",
+        "mac": "Command+Shift+F"
+      },
+      "description": "Open Amazon Power Filter"
+    }
   },
   "icons": {
     "16": "icon16.png",

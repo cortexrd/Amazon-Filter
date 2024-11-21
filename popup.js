@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const clearButton = document.getElementById('clearFilter');
     const statusDiv = document.getElementById('status');
 
+    keepWordsTextarea.focus();
+
     // Load saved words from storage
     chrome.storage.local.get(['keepWords', 'removeWords'], function (result) {
         keepWordsTextarea.value = result.keepWords || '';
