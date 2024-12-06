@@ -1,23 +1,37 @@
 {
   "manifest_version": 3,
   "name": "Amazon Power Filter",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "Power filter for Amazon search results - customize visibility with include/exclude keywords",
   "permissions": [
     "storage",
-    "activeTab",
-    "scripting"
+    "scripting",
+    "declarativeContent"
   ],
+  "host_permissions": [
+    "*://*.amazon.com/*",
+    "*://*.amazon.ca/*",
+    "*://*.amazon.co.uk/*",
+    "*://*.amazon.de/*",
+    "*://*.amazon.fr/*",
+    "*://*.amazon.es/*",
+    "*://*.amazon.it/*",
+    "*://*.amazon.co.jp/*",
+    "*://*.amazon.in/*",
+    "*://*.amazon.com.au/*",
+    "*://*.amazon.com.br/*",
+    "*://*.amazon.nl/*",
+    "*://*.amazon.se/*",
+    "*://*.amazon.pl/*",
+    "*://*.amazon.com.tr/*",
+    "*://*.amazon.ae/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_popup": "popup.html"
   },
-  "content_scripts": [
-    {
-      "matches": [ "<all_urls>" ],
-      "js": [ "content.js" ],
-      "run_at": "document_start"
-    }
-  ],
   "commands": {
     "_execute_action": {
       "suggested_key": {

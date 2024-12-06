@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Amazon Power Filter</title>
+    <title>Amazon Power Filter 1.0.0</title>
     <style>
         body {
             width: 300px;
@@ -79,10 +79,11 @@
     </style>
 </head>
 <body>
+    <h3>Amazon Power Filter 1.0.0</h3>
     <div class="container">
         <div>
-            <label for="filterWords">Include/Exclude Words (one per line):</label>
-            <div class="help-text">Use +word to require, -word to exclude, word for optional match</div>
+            <label for="filterWords">Include/Exclude Words:</label>
+            <div class="help-text">Use +word to force inclusion, -word to force exclusion.<br /> Words without + or - are optional</div>
             <textarea id="filterWords" placeholder="+laptop (must have)&#13;&#10;-refurbished (exclude)&#13;&#10;gaming (optional)"></textarea>
         </div>
 
