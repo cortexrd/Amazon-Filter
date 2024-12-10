@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     config: {
                         selector: 'div[data-asin]',
                         words: words,
-                        removeSelectors: ['.AdHolder.s-flex-full-width', '[data-asin]:not([data-component-type="s-search-result"])']
+                        removeSelectors: ['.AdHolder', '[data-asin]:not([data-component-type="s-search-result"])']
                     }
                 });
 

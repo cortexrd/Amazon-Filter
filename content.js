@@ -10,7 +10,6 @@ chrome.runtime.sendMessage({ action: "contentScriptLoaded" });
 // Listen for messages from the popup
 // In your existing message listener, update the getVisibleCount handler
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    console.log("Message received in content script:", request);
     if (request.action === "applyFilter") {
         filterElements(request.config);  // config will now contain 'words' instead of keepWords/removeWords
         sendResponse({ success: true });
@@ -31,21 +30,24 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             }
 
             // Only count elements that aren't hidden
-            return !element.classList.contains('amazon-filter-hidden');
+            return /*!element.classList.contains('amazon-filter-hidden') && */element.checkVisibility();
         }).length;
 
-        console.log("Visible product items count:", visibleCount);
+        console.log("Products found:", visibleCount);
         sendResponse(visibleCount);
     }
     return true;
 });
 
-const observer = new MutationObserver((mutations) => {
+const observer = new MutationObserver(mutations => {
     if (currentFilter) {
-        // Wait for product elements to be available
-        const elements = document.querySelectorAll('div[data-asin]');
-        if (elements.length > 0) {
-            console.log("Products found after mutation, reapplying filter");
+        const hasAddedProducts = mutations.some(mutation =>
+            Array.from(mutation.addedNodes).some(node =>
+                node.nodeType === 1 && node.hasAttribute('data-asin')
+            )
+        );
+
+        if (hasAddedProducts) {
             filterElements(currentFilter);
         }
     }
@@ -58,7 +60,7 @@ function startObserver() {
         observer.observe(searchResults, {
             childList: true,
             subtree: true,
-            characterData: true
+            //characterData: true
         });
     } else {
         // If search results container isn't ready yet, wait and try again
@@ -85,8 +87,6 @@ function filterElements(config = {
     words: [],
     removeSelectors: []
 }) {
-    console.log("Applying filter with config:", config);
-
     currentFilter = config;  // Store current filter config
 
     if (!document.getElementById('amazon-filter-style')) {
@@ -98,13 +98,11 @@ function filterElements(config = {
 
     const relatedSearchesContainer = findRelatedSearchesContainer();
     const elements = document.querySelectorAll(config.selector);
-    console.log("Found elements:", elements.length);
 
     elements.forEach(element => {
         if ((relatedSearchesContainer && element === relatedSearchesContainer) ||
             element.querySelector('[cel_widget_id*="MAIN-PAGINATION"]') ||
             element.closest('[cel_widget_id*="MAIN-PAGINATION"]')) {
-            console.log("Preserving special section:", element);
             return;
         }
 
@@ -158,7 +156,6 @@ function filterElements(config = {
 }
 
 function clearFilter() {
-    console.log("Clearing filter");
     currentFilter = null;  // Clear stored filter config
 
     const styleElement = document.getElementById('amazon-filter-style');
