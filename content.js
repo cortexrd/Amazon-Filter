@@ -1,6 +1,4 @@
 //Amazon Power Filter
-//by Normand Defayette
-//Cortex R&D Inc
 
 let currentFilter = null;
 
