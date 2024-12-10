@@ -35,8 +35,8 @@
   "commands": {
     "_execute_action": {
       "suggested_key": {
-        "default": "Ctrl+Shift+F",
-        "mac": "Command+Shift+F"
+        "default": "Alt+S",
+        "mac": "Alt+S"
       },
       "description": "Open Amazon Power Filter"
     }
